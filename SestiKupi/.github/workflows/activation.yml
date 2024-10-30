@@ -1,4 +1,4 @@
-name: Get Unity license activation file SestiNosi
+name: Get Unity license activation file
 
 on: workflow_dispatch
 
