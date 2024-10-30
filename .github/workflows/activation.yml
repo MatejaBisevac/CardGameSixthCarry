@@ -8,8 +8,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              with:
-                path: SestiKupi
   
             - uses: webbertakken/unity-request-manual-activation-file@v2
               id: getManualLicenseFile
@@ -17,4 +15,4 @@ jobs:
             - uses: activation/upload-artifact@v2
               with:
                 name: Manual Activation File
-                path: ${{ steps.getManualLicenseFile.outputs.filePath}}
+                path: ${{ steps.getManualLicenseFile.outputs.filePath }}
