@@ -7,7 +7,7 @@ jobs:
         name: Request manual activation file
         runs-on: ubuntu-latest
         steps:
-            - uses: SestiNosi/actions/checkout@v2
+            - uses: SestiKupi/actions/checkout@v2
   
             - uses: webbertakken/unity-request-manual-activation-file@v2
               id: getManualLicenseFile
