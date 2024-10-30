@@ -8,6 +8,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
+              with:
+                path: SestiKupi
   
             - uses: webbertakken/unity-request-manual-activation-file@v2
               id: getManualLicenseFile
