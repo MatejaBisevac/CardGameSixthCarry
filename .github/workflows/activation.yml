@@ -7,12 +7,13 @@ jobs:
         name: Request manual activation file
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v4
   
             - uses: webbertakken/unity-request-manual-activation-file@v2
               id: getManualLicenseFile
 
-            - uses: activation/upload-artifact@v2
+            - uses: activation/upload-artifact@v4
               with:
+                include-hidden-files: true
                 name: Manual Activation File
                 path: ${{ steps.getManualLicenseFile.outputs.filePath }}
