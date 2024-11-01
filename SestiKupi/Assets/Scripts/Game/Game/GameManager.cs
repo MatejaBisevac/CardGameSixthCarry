@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.UI;
 using Riptide;
 using SestiKupi.Core;
 using System;
@@ -44,6 +45,31 @@ public class GameManager : Singleton<GameManager>
         generatedCards = new List<GameObject>();
     }
 
+    void ResetGame()
+    {
+        foreach(Transform card in FirstColumn.transform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in SecondColumn.transform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in ThirdColumn.transform)
+        {
+            Destroy(card.gameObject);
+        }
+        foreach (Transform card in FourthColumn.transform)
+        {
+            Destroy(card.gameObject);
+        }
+        LocalPlayerRequestedPlayTurn = false;
+        LocalPlayerWaiting = true;
+        LocalPlayerChoosingStack = false;
+        UIManagerGame.Instance.readyForGameOverlay.SetActive(true);
+
+    }
+
     void Start()
     {
         CanStartGame = false;
@@ -67,6 +93,12 @@ public class GameManager : Singleton<GameManager>
         }
     }
     
+    public void ClearMessages()
+    {
+        LocalPlayerWaiting = false;
+        UIManagerGame.Instance.readyForGameOverlay.SetActive(false);
+    }
+
     //This should be moved to network manager to handle the cards generaton and which cards have players;
     //Cards on the field should be common for all players, Cards in hand should be distinct
     public void SetupGame(List<int> CardNums, List<int> CardVals)
@@ -357,6 +389,7 @@ public class GameManager : Singleton<GameManager>
     [MessageHandler((ushort)ServerToClientMsg.InitialCards)]
     private static void ReceiveIntialCards(Message msg)
     {
+        Instance.ClearMessages();
         List<int> CardNums = new List<int>();
         List<int> CardVals = new List<int>();
 
@@ -462,6 +495,7 @@ public class GameManager : Singleton<GameManager>
         var recvMsg = msg.GetString();
         Instance.LocalPlayerWaiting = true;
         Instance.SetMessageToPlayer(recvMsg);
+        Instance.ResetGame();
     }
 
 

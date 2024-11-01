@@ -22,6 +22,15 @@ namespace Assets.Scripts.Game
         Stack<Card> col2 = new Stack<Card>();
         Stack<Card> col3 = new Stack<Card>();
         Stack<Card> col4 = new Stack<Card>();
+
+        public void ResetGame()
+        {
+            currentTurn = 1;
+            StartedPlaying = false;
+            playedCards.Clear();
+            chosenStack = 0;
+        }
+
         public void SetupGame()
         {
             var cardCount = PlayerManager.s_Players.Count * 10 + 4;
@@ -143,7 +152,8 @@ namespace Assets.Scripts.Game
             int removeCount = 0;
             if(chosenStack>0)
             {
-                switch(chosenStack)
+                playedCards[0].Column = chosenStack;
+                switch (chosenStack)
                 {
                     case 1:
                         {
@@ -288,6 +298,8 @@ namespace Assets.Scripts.Game
             if(currentTurn>10)
             {
                 SendEndGame();
+                ResetGame();
+                PlayerManager.Instance.ResetGame();
             }
         }
 

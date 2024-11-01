@@ -3,6 +3,7 @@ using Riptide;
 using SestiKupi.Core;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerManager : Singleton<PlayerManager>
@@ -16,6 +17,19 @@ public class PlayerManager : Singleton<PlayerManager>
     {
         s_Players.TryGetValue(id, out Player player);
             return player;
+    }
+
+    public void ResetGame()
+    {
+        foreach(var key in readyPlayers.Keys.ToList())
+        {
+            readyPlayers[key] = false;
+        }
+
+        foreach(var key in s_Players.Keys.ToList())
+        {
+            s_Players[key].Points = 0;
+        }
     }
 
     public static bool RemovePlayer(ushort id)
@@ -41,9 +55,16 @@ public class PlayerManager : Singleton<PlayerManager>
             removedBool = true;
         }
         
+        HandleEmptyServer();
+        
         return removedBool;
     }
 
+    private static void HandleEmptyServer()
+    {
+        Instance.ResetGame();
+        GameManager.Instance.ResetGame();
+    }
 
     protected override void Awake()
     {

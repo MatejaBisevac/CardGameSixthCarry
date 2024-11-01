@@ -21,6 +21,7 @@ namespace Assets.Scripts.Game.UI
         public void ReceiveCanPlay()
         {
             readyForGameOverlay.SetActive(false);
+            GameManager.Instance.LocalPlayerWaiting = false;
         }
 
     }
