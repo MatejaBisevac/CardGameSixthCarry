@@ -20,8 +20,15 @@ namespace Assets.Scripts.Game.UI
 
         public void ReceiveCanPlay()
         {
+            CameraAnimator.Instance.ReturnToOriginalPosition();
             readyForGameOverlay.SetActive(false);
             GameManager.Instance.LocalPlayerWaiting = false;
+        }
+
+        public void QuitGame()
+        {
+            Debug.Log("APP QUIT");
+            Application.Quit();
         }
 
     }

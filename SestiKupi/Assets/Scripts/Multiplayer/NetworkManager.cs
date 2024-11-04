@@ -18,7 +18,8 @@ public enum ServerToClientMsg : ushort
     TakeStack,
     TakenStackByOther,
     EndTurn,
-    EndGame
+    EndGame,
+    Message
 }
 
 public enum ClientToServerMsg : ushort

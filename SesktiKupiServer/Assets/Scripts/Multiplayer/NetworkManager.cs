@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using Assets.Scripts.Multiplayer;
 using Riptide;
 using Riptide.Utils;
@@ -19,7 +20,8 @@ public enum ServerToClientMsg : ushort
     TakeStack,
     TakenStackByOther,
     EndTurn,
-    EndGame
+    EndGame,
+    Message
 }
 
 public enum ClientToServerMsg : ushort
@@ -35,6 +37,7 @@ public class NetworkManager : Singleton<NetworkManager>
     {
         base.Awake();
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, true);
+
     }
 
     public ServerOverriden Server;
@@ -44,17 +47,11 @@ public class NetworkManager : Singleton<NetworkManager>
     {
         Server = new ServerOverriden(); ;
         Server.Start(m_Port, m_MaxPlayers);
-       // Server.MessageReceived += OnReceivedMessage;
     }
-
-    //public void OnReceivedMessage(object sender, MessageReceivedEventArgs e)
-    //{
-    //    Debug.Log("Got message from client");
-    //   // return 0;
-    //}
 
     public void OnDisconnectClient(uint connectionID)
     {
+        MessageService.Notify(PlayerManager.GetPlayer((ushort)connectionID).Username + " Disconnected...");
         PlayerManager.RemovePlayer((ushort)connectionID);
     }
 

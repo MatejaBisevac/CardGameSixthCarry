@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Audio;
 using DG.Tweening;
 using Riptide;
 using System.Collections;
@@ -105,7 +106,9 @@ public class Card : MonoBehaviour
     private bool lifted = false;
     public void OnMouseDown()
     {
-        if(InHand)
+        AudioManager.Instance.PlayBoom();
+
+        if (InHand)
         {
             TryPlayCard();
         }

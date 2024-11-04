@@ -129,6 +129,7 @@ public class PlayerManager : Singleton<PlayerManager>
     {
         string username = msg.GetString();
         SpawnPlayer(fromId, username);
+        MessageService.Notify(username + " connected...");
     }
 
     [MessageHandler((ushort)ClientToServerMsg.RequestPlay)]
@@ -137,6 +138,7 @@ public class PlayerManager : Singleton<PlayerManager>
         string username = msg.GetString();
         Debug.Log("Recieved play request from user : " +  username);
         HandlePlayRequest(fromId);
+        MessageService.Notify(username + " ready to play...");
         //SpawnPlayer(fromId, username);
     }
     #endregion

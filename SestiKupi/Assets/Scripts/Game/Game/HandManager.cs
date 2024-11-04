@@ -1,3 +1,4 @@
+using Assets.Scripts.Game.Audio;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,12 +17,13 @@ public class HandManager : MonoBehaviour
 
     void OnMouseDown()
     {
+        AudioManager.Instance.PlaySlide();
         if(lift)
         {
             var x = initialPosition.x;
             var y = initialPosition.y;
             var z = initialPosition.z;
-            var newVector = new Vector3(x, y, z + 1f);
+            var newVector = new Vector3(x, y, z + 0.6f);
             transform.DOMove(newVector, 0.15f);
         }
         else

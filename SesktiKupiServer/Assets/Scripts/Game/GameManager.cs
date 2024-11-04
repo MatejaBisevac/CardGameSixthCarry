@@ -29,8 +29,42 @@ namespace Assets.Scripts.Game
             StartedPlaying = false;
             playedCards.Clear();
             chosenStack = 0;
+            col1.Clear();
+            col2.Clear();
+            col3.Clear();
+            col4.Clear();
         }
 
+        public void PrintColumnStatus()
+        {
+            string col1Str = "";
+            foreach(var item in col1)
+            {
+                col1Str += "Num:" + item.Num + " - Val:" + item.Val + ";";
+            }
+            Debug.Log("Column1 : " + col1Str);
+            
+            string col2Str = "";
+            foreach (var item in col2)
+            {
+                col2Str += "Num:" + item.Num + " - Val:" + item.Val + ";";
+            }
+            Debug.Log("Column2 : " + col2Str);
+            
+            string col3Str = "";
+            foreach (var item in col3)
+            {
+                col3Str += "Num:" + item.Num + " - Val:" + item.Val + ";";
+            }
+            Debug.Log("Column3 : " + col3Str);
+            
+            string col4Str = "";
+            foreach (var item in col4)
+            {
+                col4Str += "Num:" + item.Num + " - Val:" + item.Val + ";";
+            }
+            Debug.Log("Column4 : " + col4Str);
+        }
         public void SetupGame()
         {
             var cardCount = PlayerManager.s_Players.Count * 10 + 4;
@@ -149,6 +183,7 @@ namespace Assets.Scripts.Game
 
         public void CheckCanPlayTurn()
         {
+           // PrintColumnStatus();
             int removeCount = 0;
             if(chosenStack>0)
             {
@@ -308,6 +343,7 @@ namespace Assets.Scripts.Game
 
             var player = PlayerManager.GetPlayer(playerId);
             player.Points += GetPointsForColumn(column);
+            //Debug.Log(player.Username + " - POINTS : " + player.Points);
         }
 
         private int GetPointsForColumn(int column)
@@ -361,6 +397,7 @@ namespace Assets.Scripts.Game
         //----------------------MESSAGE SENDING-----------------------------//
         public static void SendEndTurn()
         {
+            MessageService.Notify("end turn...");
             Message msg = Message.Create(MessageSendMode.Reliable, ServerToClientMsg.EndTurn);
             msg.AddString("END TURN NIGGGGAAA ");
             NetworkManager.Instance.Server.SendToAll(msg);
@@ -398,6 +435,7 @@ namespace Assets.Scripts.Game
 
         public static void SendTakeStack(Card card)
         {
+            MessageService.Notify(PlayerManager.s_Players[card.PlayerId].Username + " taking " + card.Column+ ". stack...");
             Message msg = Message.Create(MessageSendMode.Reliable, ServerToClientMsg.TakeStack);
 
             msg.AddInt(card.Num);
@@ -420,10 +458,13 @@ namespace Assets.Scripts.Game
                     NetworkManager.Instance.Server.Send(msg, player.Value.Id);
                 }
             }
+
         }
 
         public static void SendChooseStackForPlayer(Card card, ushort playerId)
         {
+            MessageService.Notify(PlayerManager.GetPlayer(playerId).Username + " choosing stack...");
+            
             Message msg = Message.Create(MessageSendMode.Reliable, ServerToClientMsg.ChooseStack);
             msg.AddString("NIGGGAAA CHOOSEEE(Stack)");
             msg.AddInt(card.Num);
@@ -434,6 +475,8 @@ namespace Assets.Scripts.Game
 
         public static void SendEndGame()
         {
+            MessageService.Notify("Game ended...");
+            
             string pointsList = " points : ";
             foreach(var player in PlayerManager.s_Players)
             {
@@ -472,6 +515,7 @@ namespace Assets.Scripts.Game
             Instance.playedCards.Add(cardPlayed);
             Instance.CheckCanPlayTurn();
             Instance.UpdatePlayedCards();
+            MessageService.Notify(PlayerManager.GetPlayer(fromId).Username + " played turn...");
         }
 
         [MessageHandler((ushort)ClientToServerMsg.RequestChooseStack)]
@@ -480,6 +524,7 @@ namespace Assets.Scripts.Game
             Instance.chosenStack = msg.GetInt();
             Instance.CheckCanPlayTurn();
             Instance.UpdatePlayedCards();
+            MessageService.Notify(PlayerManager.GetPlayer(fromId).Username + " taking stack...");
         }
 
     }

@@ -19,6 +19,10 @@ public class GameManager : Singleton<GameManager>
     public GameObject ThirdColumn;
     public GameObject FourthColumn;
     public GameObject Hand;
+
+    [Header("Server Messages game object")]
+    public GameObject ServerMessagesObj;
+
     [Header("Waiting interface")]
     public GameObject WaitingBox;
     public GameObject InfoText;
@@ -67,6 +71,8 @@ public class GameManager : Singleton<GameManager>
         LocalPlayerWaiting = true;
         LocalPlayerChoosingStack = false;
         UIManagerGame.Instance.readyForGameOverlay.SetActive(true);
+        ServerMessagesObj.GetComponent<ServerMessageHandler>().ResetValue();
+
 
     }
 
@@ -138,6 +144,28 @@ public class GameManager : Singleton<GameManager>
         card.transform.SetParent(Hand.transform);
         card.transform.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(card.transform.position.x, card.transform.position.y, 0f);
         card.transform.Rotate(0f, 0f, 5f);
+    }
+
+    public void TryChooseStackFromRow(int col)
+    {
+        Debug.Log("Trying to choose selected stack");
+        if (LocalPlayerChoosingStack)
+        {
+            var chosenCardToReplaceStack = GetCardToReplaceStack();
+            if (chosenCardToReplaceStack == null)
+            {
+                ShowErrorMessage("SYNC ISSUE ABORT GAME NIGGA");
+            }
+            else
+            {
+                ReplaceStack(col);
+                SendReplacedColumnToServer(col);
+                GetPointForColumn(col);
+
+                SetMessageToPlayer("Waiting on other players...");
+            }
+        }
+
     }
 
     public GameObject GetCardToReplaceStack()
@@ -300,63 +328,6 @@ public class GameManager : Singleton<GameManager>
         LocalPlayerPoints += points;
         Debug.Log(LocalPlayerPoints);
         //return points;
-    }
-
-
-    //TODO -- Delete this method
-    public void AddToColumn(GameObject card)
-    {
-        var placeOn = 0;
-        var maxVal = 0;
-        var cardNum = card.transform.GetComponent<Card>().Num;
-        var col1Num = column1.Peek().transform.GetComponent<Card>().Num;
-        var col2Num = column2.Peek().transform.GetComponent<Card>().Num;
-        var col3Num = column3.Peek().transform.GetComponent<Card>().Num;
-        var col4Num = column4.Peek().transform.GetComponent<Card>().Num;
-
-        if(cardNum > col1Num)
-        {
-            placeOn = 1;
-            maxVal = col1Num;
-        }
-        if(cardNum > col2Num && col2Num > maxVal)
-        {
-            placeOn = 2;
-            maxVal = col2Num;
-        }
-        if(cardNum > col3Num && col3Num > maxVal)
-        {
-            placeOn = 3;
-            maxVal = col3Num;
-        }
-        if(cardNum > col4Num && col4Num > maxVal)
-        {
-            placeOn = 4;
-            maxVal = col4Num;
-        }
-
-        switch(placeOn)
-        {
-            case 1:
-                var newCard1 = UndoAddToHandTransform(card);
-                AddToColumn(1, newCard1);
-                break;
-            case 2:
-                var newCard2 = UndoAddToHandTransform(card);
-                AddToColumn(2, newCard2);
-                break;
-            case 3:
-                var newCard3 = UndoAddToHandTransform(card);
-                AddToColumn(3, newCard3);
-                break;
-            case 4:
-                var newCard4 = UndoAddToHandTransform(card);
-                AddToColumn(4, newCard4);
-                break;
-            case 0:
-                LogInvalidMove();
-                break;
-        }
     }
 
     public void LogInvalidMove()

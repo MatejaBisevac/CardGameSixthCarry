@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class PlayerManager : Singleton<PlayerManager>
 {
     [SerializeField] private GameObject m_PlayerPrefab;
-    private static Dictionary<ushort, Player> s_Players = new Dictionary<ushort, Player>();
+    public static Dictionary<ushort, Player> s_Players = new Dictionary<ushort, Player>();
     private static Dictionary<ushort, GameObject> s_PlayersGameObj = new Dictionary<ushort, GameObject>();
     private static Dictionary<ushort, string> other_players = new Dictionary<ushort, string>();
     
